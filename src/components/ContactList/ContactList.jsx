@@ -1,26 +1,23 @@
 import PropTypes from 'prop-types';
-
-import {
-  Div,
-  ContactTitle,
-  ContactWrapper,
-} from './ContactList.styled';
-
+import { Div, ContactTitle, ContactWrapper } from './ContactList.styled';
 import Item from '../Contact/Contact';
+import { useSelector } from 'react-redux';
+import { getContacts, getFilter } from 'redux/selectors';
 
-export default function ContactList({ title, contacts, onDeleteContact }) {
+export default function ContactList({ Message }) {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const normFilter = filter.value.toLowerCase();
+
+  const filteredContacts = contacts.items.filter(({ name }) =>
+    name?.toLowerCase()?.includes(normFilter)
+  );
   return (
     <Div>
-      <ContactTitle>{title}</ContactTitle>
+      <ContactTitle>{Message}</ContactTitle>
       <ContactWrapper>
-        {contacts.map(({ id, name, number }) => (
-          <Item
-            key={id}
-            id={id}
-            name={name}
-            number={number}
-            onDeleteContact={onDeleteContact}
-          />
+        {filteredContacts.map(({ id, name, number }) => (
+          <Item key={id} id={id} name={name} number={number} />
         ))}
       </ContactWrapper>
     </Div>
